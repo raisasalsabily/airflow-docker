@@ -1,8 +1,18 @@
-import tweepy
+import pip
+
+def install(package):
+    if hasattr(pip, 'main'):
+        pip.main(['install', package])
+    else:
+        pip._internal.main(['install', package])
+
+install('tweepy')      
+
 import pandas as pd 
-import json
 from datetime import datetime
-import s3fs 
+
+import tweepy
+# import s3fs 
 
 def run_twitter_etl():
 
@@ -35,6 +45,6 @@ def run_twitter_etl():
     new_tweets_df = pd.DataFrame(list) # masukkan ke dataframe
 
     ## untuk load pertama
-    # new_tweets_df.to_csv('tweets.csv', index=False)
+    new_tweets_df.to_csv('tweets.csv', index=False)
     ## untuk append data frame ke CSV file yang sudah ada
-    new_tweets_df.to_csv('tweets.csv', mode='a', index=False, header=False)
+    # new_tweets_df.to_csv('tweets.csv', mode='a', index=False, header=False)
