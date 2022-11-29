@@ -27,7 +27,7 @@ list = []
 for tweet in tweets:
     text = tweet._json["full_text"]
 
-    refined_tweet = {"user": tweet.user.screen_name,
+    ugm_fess_data = {"user": tweet.user.screen_name,
                     'text' : text,
                     'favorite_count' : tweet.favorite_count,
                     'retweet_count' : tweet.retweet_count,
