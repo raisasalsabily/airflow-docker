@@ -10,6 +10,7 @@ def install(package):
 install('tweepy')
 install('s3fs')
 install('psycopg2')
+install('instaloader')
 
 import pandas as pd
 from datetime import datetime
@@ -17,6 +18,7 @@ import os.path
 import re
 import csv
 import psycopg2 as pg
+import instaloader
 from pathlib import Path
 
 import tweepy
@@ -52,6 +54,33 @@ def extract_tweet():
                     'text': tweet.text
                     }
         list.append(search_data)
+
+    L = instaloader.Instaloader()
+
+    # Login dengan akun instagram
+    L.login("lemiluvv","cONmb_dolW5X_MU")
+
+    # Menentukan target akun instagram
+    target_id='ganjar_pranowo'
+
+    # ambil semua post dari akun target
+    posts = instaloader.Profile.from_username(L.context, target_id).get_posts()
+
+    # simpan data komentar dari post terbaru ke list
+    i=0
+    for post in posts:
+        if i>100: # ambil 100 komentar terbaru
+            break
+        for comment in post.get_comments():
+            search_data = {
+                # scrape username dan text saja agar tidak perlu cleaning berlebihan
+                'user': comment.owner.username,
+                'text': comment.text
+            }
+            list.append(search_data)
+            i+=1
+            if i>100: # ambil 100 komentar terbaru
+                break
     return list
 
 
