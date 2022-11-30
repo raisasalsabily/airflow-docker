@@ -88,8 +88,8 @@ services:
     image: dpage/pgadmin4
     restart: always
     environment:
-      - PGADMIN_DEFAULT_EMAIL=contato@company.com
-      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_DEFAULT_EMAIL=duabelas@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=duabelas
     ports:
       - "15432:80"
 

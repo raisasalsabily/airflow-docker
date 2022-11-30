@@ -12,19 +12,23 @@ install('s3fs')
 install('psycopg2')
 install('instaloader')
 
-import pandas as pd
-from datetime import datetime
-import os.path
-import re
-import csv
-import psycopg2 as pg
 import instaloader
-from pathlib import Path
-
 import tweepy
 import s3fs
 
-# csv_path = Path("/opt/airflow/data/tweets.csv")
+from datetime import datetime
+from pathlib import Path
+import pandas as pd
+import csv
+import os.path
+import re
+import psycopg2 as pg
+
+""" CATATAN: 
+-   Pada file twitter_etl.py ini terdiri atas ETL untuk API dari twitter DAN Instagram,
+    meskipun nama file-nya twitter_etl.py
+-   Table database tweets_tbl juga berisi data dari twitter DAN Instagram.
+"""
 
 # access key dari Twitter API
 a_key = 'qUnv0UK4ePe0qgMYZp0jV72YI'
@@ -93,18 +97,15 @@ def clean_tweet(tweets):
     return tweets
 
 def transform_tweet(**kwargs):
-    # Xcoms to get the data from previous task
+    # import data dari task lain dengan xcom
     ti = kwargs['ti']
     value = ti.xcom_pull(task_ids='extract_tweet')
-    df_tweets = pd.DataFrame(value)
-    df_clean_tweets = df_tweets.dropna()
-    df_clean_tweets = df_clean_tweets.drop_duplicates('text', keep='first')
-
-    df_clean_tweets['text'] = df_clean_tweets['text'].apply(clean_tweet)
-
+    df_tweets = pd.DataFrame(value) # masukkan value ke dataframe
+    # lakukan penghilangan simbol-simbol unik
+    df_fin_tweets['text'] = df_tweets['text'].apply(clean_tweet)
+    # load ke csv
     try:
-        # df_clean_tweets = df_clean_tweets.set_index("id")
-        df_clean_tweets.to_csv('tweets.csv', index=False, header=True)
+        df_fin_tweets.to_csv('tweets.csv', index=False, header=True)
         return True
     except OSError as e:
         print(e)
@@ -118,7 +119,7 @@ def load_to_db():
     except Exception as error:
         print(error)
 
-    #Checking database establishment
+    # buat tabel
     cursor = conn.cursor()
     cursor.execute("""
     create table if not exists tweets_tbl(
@@ -129,6 +130,7 @@ def load_to_db():
 
     conn.commit()
 
+    # load data dari csv ke postgresql
     with open('tweets.csv', 'r') as data:
         reader = csv.reader(data)
         next(reader)
@@ -139,5 +141,3 @@ def load_to_db():
             )
     conn.commit()
 
-# # testing
-# load_to_db()
