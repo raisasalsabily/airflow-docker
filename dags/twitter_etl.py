@@ -1,57 +1,57 @@
 # Libraries
-import pip 
- 
-def install(package): 
-    if hasattr(pip, 'main'): 
-        pip.main(['install', package]) 
-    else: 
-        pip._internal.main(['install', package]) 
- 
-install('tweepy')    
-install('s3fs')        
-install('psycopg2')        
- 
-import pandas as pd  
-from datetime import datetime 
-import os.path 
+import pip
+
+def install(package):
+    if hasattr(pip, 'main'):
+        pip.main(['install', package])
+    else:
+        pip._internal.main(['install', package])
+
+install('tweepy')
+install('s3fs')
+install('psycopg2')
+
+import pandas as pd
+from datetime import datetime
+import os.path
 import re
 import csv
 import psycopg2 as pg
 from pathlib import Path
- 
-import tweepy 
-import s3fs  
+
+import tweepy
+import s3fs
 
 # csv_path = Path("/opt/airflow/data/tweets.csv")
 
 # access key dari Twitter API
-a_key = 'qUnv0UK4ePe0qgMYZp0jV72YI'  
-a_secret = 'ghN87rNJQIwR7c9cBRHROA4gwNDRN6aBJWL1u7JDMgojNwr0Hj' 
-c_key = '1448947389847404550-3sj9PK07d1NWj8OStIuXWK4M8W1HCa'  
-c_secret = 'nISY2fPiEzI5gNs1DyxyaGTbH2dqFrDQNGH9wJRHr33hF' 
- 
-def extract_tweet(): 
-    # autentikasi ke twitter 
-    auth = tweepy.OAuthHandler(a_key, a_secret)    
-    auth.set_access_token(c_key, c_secret)  
+a_key = 'qUnv0UK4ePe0qgMYZp0jV72YI'
+a_secret = 'ghN87rNJQIwR7c9cBRHROA4gwNDRN6aBJWL1u7JDMgojNwr0Hj'
+c_key = '1448947389847404550-3sj9PK07d1NWj8OStIuXWK4M8W1HCa'
+c_secret = 'nISY2fPiEzI5gNs1DyxyaGTbH2dqFrDQNGH9wJRHr33hF'
 
-    # Buat objek API  
-    api = tweepy.API(auth) 
-    tweets = api.search_tweets( 
-                            q="ganjar",             # keyword yang dicari 
-                            lang="id",              # bahasa yang dicari (Indonesia) 
-                            result_type="recent",   # tweet yang diambil yang terkini 
-                            count=100                # max = 100 baris tweets 
-                        ) 
+def extract_tweet():
+    # autentikasi ke twitter
+    auth = tweepy.OAuthHandler(a_key, a_secret)
+    auth.set_access_token(c_key, c_secret)
+
+    # Buat objek API
+    api = tweepy.API(auth)
+    tweets = api.search_tweets(
+                            q="ganjar",             # keyword yang dicari
+                            lang="id",              # bahasa yang dicari (Indonesia)
+                            result_type="recent",   # tweet yang diambil yang terkini
+                            count=100                # max = 100 baris tweets
+                        )
     # list untuk menampung data dari API
-    list = [] 
-    for tweet in tweets: 
-        search_data = { 
-                    # # scrape username, text, dan waktu dibuat saja agar tidak perlu cleaning berlebihan 
-                    'user': tweet.user.screen_name, 
-                    'text': tweet.text 
-                    } 
-        list.append(search_data) 
+    list = []
+    for tweet in tweets:
+        search_data = {
+                    # # scrape username, text, dan waktu dibuat saja agar tidak perlu cleaning berlebihan
+                    'user': tweet.user.screen_name,
+                    'text': tweet.text
+                    }
+        list.append(search_data)
     return list
 
 
@@ -84,7 +84,7 @@ def transform_tweet(**kwargs):
 def load_to_db():
     try:
         conn = pg.connect(
-            "dbname='airflow' user='postgres' host='localhost' password='raisa10112001'"
+            "dbname='airflow' user='airflow' host='postgres' password='airflow'"
         )
     except Exception as error:
         print(error)
@@ -111,4 +111,4 @@ def load_to_db():
     conn.commit()
 
 # # testing
-load_to_db()
+# load_to_db()

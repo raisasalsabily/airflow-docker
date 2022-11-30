@@ -1,25 +1,5 @@
-import pip
-
-def install(package):
-    if hasattr(pip, 'main'):
-        pip.main(['install', package])
-    else:
-        pip._internal.main(['install', package])
-
-install('tweepy')   
-install('s3fs')   
-
-import logging
-import os
-import pandas as pd  
-import os.path 
-import re
-import csv
-import psycopg2 as pg
 from pathlib import Path
- 
-import tweepy 
-import s3fs  
+
 from datetime import datetime, timedelta
 
 from airflow import DAG
@@ -51,13 +31,13 @@ dag = DAG(
 # # TASKS
 
 start_operator = DummyOperator(
-    task_id='begin_execution',  
+    task_id='begin_execution',
     dag=dag)
 
 extract_tweet = PythonOperator(
     task_id='extract_tweet',
     python_callable=extract_tweet,
-    dag=dag, 
+    dag=dag,
 )
 transform_tweet = PythonOperator(
     task_id='transform_tweet',
@@ -71,7 +51,7 @@ load_to_db = PythonOperator(
     dag=dag)
 
 end_operator = DummyOperator(
-    task_id='stop_execution',  
+    task_id='stop_execution',
     dag=dag)
 
 start_operator >> extract_tweet >> transform_tweet >> load_to_db >> end_operator
