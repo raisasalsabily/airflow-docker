@@ -105,7 +105,7 @@ def transform_tweet(**kwargs):
     df_fin_tweets['text'] = df_tweets['text'].apply(clean_tweet)
     # load ke csv
     try:
-        df_fin_tweets.to_csv('tweets.csv', index=False, header=True)
+        df_fin_tweets.to_csv('social.csv', index=False, header=True)
         return True
     except OSError as e:
         print(e)
@@ -131,7 +131,7 @@ def load_to_db():
     conn.commit()
 
     # load data dari csv ke postgresql
-    with open('tweets.csv', 'r') as data:
+    with open('social.csv', 'r') as data:
         reader = csv.reader(data)
         next(reader)
         for row in reader:
