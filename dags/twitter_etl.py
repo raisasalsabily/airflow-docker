@@ -22,13 +22,13 @@ from pathlib import Path
 import tweepy 
 import s3fs  
 
-csv_path = Path("/opt/airflow/data/tweets.csv")
+# csv_path = Path("/opt/airflow/data/tweets.csv")
 
 # access key dari Twitter API
-a_key = 'cyXcjxUc1ZlLD2v1DjaJrLiVI'  
-a_secret = 'pD3mk041ROBiSSwt2C3kytR9eF1zYrX1vBD8whpDln5Zq4y1jX' 
-c_key = '1279253779540410373-8ODCqefNcIvSFXSrwKH7DPhtQTda3i'  
-c_secret = 'nVGU8WyEdGCQ2gU1qQ57NXxLpYQts4Emt1UPM6GVlYaav' 
+a_key = 'qUnv0UK4ePe0qgMYZp0jV72YI'  
+a_secret = 'ghN87rNJQIwR7c9cBRHROA4gwNDRN6aBJWL1u7JDMgojNwr0Hj' 
+c_key = '1448947389847404550-3sj9PK07d1NWj8OStIuXWK4M8W1HCa'  
+c_secret = 'nISY2fPiEzI5gNs1DyxyaGTbH2dqFrDQNGH9wJRHr33hF' 
  
 def extract_tweet(): 
     # autentikasi ke twitter 
@@ -93,8 +93,8 @@ def load_to_db():
     cursor = conn.cursor()
     cursor.execute("""
     create table if not exists tweets_tbl(
-        users varchar(256),
-        texts varchar(256)
+        users varchar,
+        texts varchar
     );
     """)
 
@@ -110,20 +110,5 @@ def load_to_db():
             )
     conn.commit()
 
+# # testing
 load_to_db()
-
-#     new_tweets_df = pd.DataFrame(list) # # masukkan ke dataframe 
- 
- 
-#     # # import ke csv - cek apakah file sudah ada/belum 
-#     file_exists = os.path.exists('tweets.txt') 
-#     if(not file_exists): 
-#         # # buat file baru 
-#         new_tweets_df.to_csv('tweets.csv', mode='a', index=False) 
-#     else: 
-#         # # append ke file lama 
-#         new_tweets_df.to_csv('tweets.csv', mode='a', index=False, header=False) 
- 
- 
-# # # untuk testing 
-# run_twitter_etl()
