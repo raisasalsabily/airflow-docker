@@ -6,13 +6,15 @@ def install(package):
     else:
         pip._internal.main(['install', package])
 
-install('tweepy')      
+install('tweepy')   
+install('s3fs')       
 
 import pandas as pd 
 from datetime import datetime
+import os.path
 
 import tweepy
-# import s3fs 
+import s3fs 
 
 def run_twitter_etl():
 
@@ -32,19 +34,29 @@ def run_twitter_etl():
                             q="ganjar",             # keyword yang dicari
                             lang="id",              # bahasa yang dicari (Indonesia)
                             result_type="recent",   # tweet yang diambil yang terkini
-                            count=100               # max = 100 baris tweets
+                            count=100                # max = 100 baris tweets
                         )
 
     list = []
     for tweet in tweets:
         search_data = {
-                    'text': tweet.text, # cukup scrape text dari tweet agar tidak perlu cleaning berlebihan
+                    # scrape username, text, dan waktu dibuat saja agar tidak perlu cleaning berlebihan
+                    'user': tweet.user.screen_name,
+                    'text': tweet.text
                     }
         list.append(search_data)
 
     new_tweets_df = pd.DataFrame(list) # masukkan ke dataframe
 
-    ## untuk load pertama
-    new_tweets_df.to_csv('tweets.csv', index=False)
-    ## untuk append data frame ke CSV file yang sudah ada
-    # new_tweets_df.to_csv('tweets.csv', mode='a', index=False, header=False)
+    # cek apakah file sudah ada/belum
+    file_exists = os.path.exists('tweets.txt')
+    if(not file_exists):
+        # buat file baru
+        new_tweets_df.to_csv('tweets.csv', mode='a', index=False)
+    else:
+        # append ke file lama
+        new_tweets_df.to_csv('tweets.csv', mode='a', index=False, header=False)
+
+
+# untuk testing
+run_twitter_etl()

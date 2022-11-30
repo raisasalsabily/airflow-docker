@@ -6,39 +6,41 @@ def install(package):
     else:
         pip._internal.main(['install', package])
 
-install('tweepy')      
+install('tweepy')   
+install('s3fs')   
+
+from datetime import timedelta
+from datetime import datetime
 
 import tweepy
-from datetime import timedelta
+import s3fs
+
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
-from datetime import datetime
 from twitter_etl import run_twitter_etl
 
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2020, 11, 8),
-    'email': ['airflow@example.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
+    'start_date': datetime(2022, 11, 29),
     'retries': 1,
-    'retry_delay': timedelta(minutes=1)
+    'retry_delay': timedelta(minutes=3)
 }
 
 dag = DAG(
     'twitter_dag',
     default_args=default_args,
-    description='Our first DAG with ETL process!',
-    schedule_interval=timedelta(days=1),
+    description='dag dengan etl data dari twitter',
+    schedule_interval='@hourly',
+    catchup=False,
+    max_active_runs=1
 )
 
-dag = DAG(
-    'twitter_dag',
-    default_args=default_args,
-    description='My first etl code'
-)
+start_operator = DummyOperator(
+    task_id='begin_execution',  
+    dag=dag)
 
 run_etl = PythonOperator(
     task_id='complete_twitter_etl',
@@ -46,4 +48,8 @@ run_etl = PythonOperator(
     dag=dag, 
 )
 
-run_etl
+end_operator = DummyOperator(
+    task_id='stop_execution',  
+    dag=dag)
+
+start_operator >> run_etl >> end_operator

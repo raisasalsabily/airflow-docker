@@ -20,7 +20,7 @@ tweets = api.search_tweets(
                         q="ganjar",             # keyword yang dicari
                         lang="id",              # bahasa yang dicari (Indonesia)
                         result_type="recent",   # tweet yang diambil yang terkini
-                        count=100               # max = 100 baris tweets
+                        count=50               # max = 100 baris tweets
                     )
 
 list = []
@@ -33,7 +33,7 @@ for tweet in tweets:
 new_tweets_df = pd.DataFrame(list) # masukkan ke dataframe
 
 ## untuk load pertama
-# new_tweets_df.to_csv('tweets.csv', index=False)
+# new_tweets_df.to_csv('tweets.csv', mode='a', index=False)
 ## untuk append data frame ke CSV file yang sudah ada
 new_tweets_df.to_csv('tweets.csv', mode='a', index=False, header=False)
 
