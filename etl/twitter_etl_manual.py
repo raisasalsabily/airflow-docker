@@ -17,10 +17,10 @@ import tweepy
 import s3fs   
   
 # access key dari twitter  
-a_key = 'cyXcjxUc1ZlLD2v1DjaJrLiVI'   
-a_secret = 'pD3mk041ROBiSSwt2C3kytR9eF1zYrX1vBD8whpDln5Zq4y1jX'  
-c_key = '1279253779540410373-8ODCqefNcIvSFXSrwKH7DPhtQTda3i'   
-c_secret = 'nVGU8WyEdGCQ2gU1qQ57NXxLpYQts4Emt1UPM6GVlYaav'  
+a_key = 'qUnv0UK4ePe0qgMYZp0jV72YI'   
+a_secret = 'ghN87rNJQIwR7c9cBRHROA4gwNDRN6aBJWL1u7JDMgojNwr0Hj'  
+c_key = '1448947389847404550-3sj9PK07d1NWj8OStIuXWK4M8W1HCa'   
+c_secret = 'nISY2fPiEzI5gNs1DyxyaGTbH2dqFrDQNGH9wJRHr33hF'  
   
 def run_twitter_etl():  
     # autentikasi ke twitter  

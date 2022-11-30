@@ -11,10 +11,16 @@ install('s3fs')
 
 import logging
 import os
+import pandas as pd  
+import os.path 
+import re
+import csv
+import psycopg2 as pg
+from pathlib import Path
+ 
+import tweepy 
+import s3fs  
 from datetime import datetime, timedelta
-
-import tweepy
-import s3fs
 
 from airflow import DAG
 
@@ -22,15 +28,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 
-# from airflow.providers.postgres.operators.postgres import Mapping, PostgresOperator
-# from operators.APItoPostgresOperator import APItoPostgresOperator
-# from operators.DataQualityOperator import DataQualityOperator
-# from operators.LoadFactOperator import LoadFactOperator
-# from operators.LoadDimensionOperator import LoadDimensionOperator
-# from helpers.sqlstatements import SqlQueries
-
 from airflow.utils.dates import days_ago
-# from twitter_etl import run_twitter_etl
 from twitter_etl import extract_tweet, clean_tweet, transform_tweet, load_to_db
 
 default_args = {
@@ -46,7 +44,7 @@ dag = DAG(
     default_args=default_args,
     description='dag dengan etl data dari twitter',
     schedule_interval='@hourly',
-    catchup=False,
+    # catchup=False,
     max_active_runs=1
 )
 
