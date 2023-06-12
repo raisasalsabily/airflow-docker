@@ -62,7 +62,7 @@ def extract_tweet():
     L = instaloader.Instaloader()
 
     # Login dengan akun instagram
-    L.login("lemiluvv","cONmb_dolW5X_MU")
+    L.login("USERNAME","PASSWORD")
 
     # Menentukan target akun instagram
     target_id='ganjar_pranowo'
